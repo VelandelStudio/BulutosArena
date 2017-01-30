@@ -1,3 +1,3 @@
 # BulutosArena
-Sandbox_Project \n
+Sandbox_Project
 La bite a moustache !
