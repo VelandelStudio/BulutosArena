@@ -1,4 +1,8 @@
 sceneSetups:
+<<<<<<< HEAD
 - path: Assets/Scene/Level0.unity
+=======
+- path: Assets/Scene/MiniGame.unity
+>>>>>>> origin/master
   isLoaded: 1
   isActive: 1
