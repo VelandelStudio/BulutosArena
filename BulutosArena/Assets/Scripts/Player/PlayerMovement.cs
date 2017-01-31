@@ -5,14 +5,13 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour {
 
     private float testFloat = 1f;
+    private float testBuluto = 50f;
 
     public float moveSpeed;
     public float jumpSpeed;
     private float initialSpeed;
     private bool isJumping = false;
     private Rigidbody rb;
-
-    private float bite = 50f; 
 
     public float sensitive = 2f;
     public Camera eyes;
