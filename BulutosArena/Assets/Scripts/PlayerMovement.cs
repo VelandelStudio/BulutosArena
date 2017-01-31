@@ -36,7 +36,6 @@ public class PlayerMovement : MonoBehaviour {
 
         transform.position += transform.forward * Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime;
         transform.position += transform.right * Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
-
     }
 
     private void JumpHandler()
@@ -56,10 +55,10 @@ public class PlayerMovement : MonoBehaviour {
 
     private void RotateCamera()
     {
-        rotateX = Input.GetAxis("Mouse X") * sensitive;
-        rotateY = Input.GetAxis("Mouse Y") * sensitive;
-
-        eyes.transform.Rotate(-rotateY, 0, 0);
-        transform.Rotate(0, rotateX, 0);
+        rotateY += Input.GetAxis("Mouse X") * sensitive;
+        rotateX -= Input.GetAxis("Mouse Y") * sensitive;
+        rotateX = Mathf.Clamp(rotateX, -90, 90);
+        eyes.transform.rotation = Quaternion.Euler(rotateX, rotateY, 0);
+        transform.rotation = Quaternion.Euler(0, rotateY, 0);
     }
 }
