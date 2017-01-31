@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
-    private float testFloat = 2f;
-
     public float moveSpeed;
     public float jumpSpeed;
     private float initialSpeed;
