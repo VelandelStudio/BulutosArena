@@ -10,6 +10,8 @@ public class PlayerMovement : MonoBehaviour {
     private bool isJumping = false;
     private Rigidbody rb;
 
+    private float bite = 50f; 
+
     public float sensitive = 2f;
     public Camera eyes;
 
