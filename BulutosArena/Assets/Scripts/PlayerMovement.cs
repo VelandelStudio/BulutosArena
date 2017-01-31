@@ -6,20 +6,25 @@ public class PlayerMovement : MonoBehaviour {
 
     public float moveSpeed;
     public float jumpSpeed;
-
     private float initialSpeed;
     private bool isJumping = false;
-    private float initialPositionY;
     private Rigidbody rb;
+
+    public float sensitive = 2f;
+    public Camera eyes;
+
+    float rotateX;
+    float rotateY;
 
     void Start () {
         initialSpeed = moveSpeed;
         rb = GetComponent<Rigidbody>();
     }
 	
-	void Update () {
+	void FixedUpdate () {
         MovePlayer();
         JumpHandler();
+        RotateCamera();
     }
 
     private void MovePlayer()
@@ -31,6 +36,7 @@ public class PlayerMovement : MonoBehaviour {
 
         transform.position += transform.forward * Input.GetAxisRaw("Vertical") * moveSpeed * Time.deltaTime;
         transform.position += transform.right * Input.GetAxisRaw("Horizontal") * moveSpeed * Time.deltaTime;
+
     }
 
     private void JumpHandler()
@@ -48,9 +54,12 @@ public class PlayerMovement : MonoBehaviour {
             isJumping = false;
     } 
 
-    /*private IEnumerator JumpCycle()
+    private void RotateCamera()
     {
-        transform.position += transform.up * jumpSpeed * Time.deltaTime;
-        return;
-    }*/
+        rotateX = Input.GetAxis("Mouse X") * sensitive;
+        rotateY = Input.GetAxis("Mouse Y") * sensitive;
+
+        eyes.transform.Rotate(-rotateY, 0, 0);
+        transform.Rotate(0, rotateX, 0);
+    }
 }
