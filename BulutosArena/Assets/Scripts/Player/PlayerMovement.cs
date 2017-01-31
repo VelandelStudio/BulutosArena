@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
+    private float testFloat = 1f;
+
     public float moveSpeed;
     public float jumpSpeed;
     private float initialSpeed;
@@ -56,8 +58,10 @@ public class PlayerMovement : MonoBehaviour {
     private void RotateCamera()
     {
         rotateY += Input.GetAxis("Mouse X") * sensitive;
+
         rotateX -= Input.GetAxis("Mouse Y") * sensitive;
         rotateX = Mathf.Clamp(rotateX, -90, 90);
+
         eyes.transform.rotation = Quaternion.Euler(rotateX, rotateY, 0);
         transform.rotation = Quaternion.Euler(0, rotateY, 0);
     }
