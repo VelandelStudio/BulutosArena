@@ -7,7 +7,6 @@ public class PlayerShooting : NetworkBehaviour {
     bool canShoot;
     float ellapsedTime;
 
-    //[SerializeField]
     Transform gunEnd;
     [SerializeField]
     int gunDamage;
@@ -37,6 +36,7 @@ public class PlayerShooting : NetworkBehaviour {
     {
         if (!canShoot)
             return;
+
         ellapsedTime += Time.deltaTime;
 
         if(Input.GetButton("Fire1") && ellapsedTime > fireRate)
