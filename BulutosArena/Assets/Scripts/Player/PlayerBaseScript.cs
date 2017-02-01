@@ -15,17 +15,14 @@ public class PlayerBaseScript : NetworkBehaviour {
 
     private void Start()
     {
-        if (Camera.main != null)
-            mainCamera = Camera.main.gameObject;
+        if (isLocalPlayer)
+            mainCamera = GetComponentInChildren<Camera>(true).gameObject;
 
         EnablePlayer();
     }
 
     private void DisablePlayer()
     {
-        if (mainCamera != null && isLocalPlayer)
-            mainCamera.SetActive(true);
-
         onToggleShared.Invoke(false);
 
         if (isLocalPlayer)
@@ -36,9 +33,6 @@ public class PlayerBaseScript : NetworkBehaviour {
 
     private void EnablePlayer()
     {
-        if (mainCamera != null && isLocalPlayer)
-            mainCamera.SetActive(false);
-
         onToggleShared.Invoke(true);
 
         if(isLocalPlayer)
