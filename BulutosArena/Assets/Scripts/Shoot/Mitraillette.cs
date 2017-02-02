@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class Mitraillette : PlayerShooting
+public class Mitraillette : WeaponBase
 {
-    public override void Start()
+    private void Awake()
     {
-        base.Start();
-    }
-
-    public override void Update()
-    {
-        base.Update();
+        gunDamage = 1;
+        fireRate = 0.2f;
+        weaponRange = 50f;
+        hitForce = 1f;
+        weaponName = "Mitraillette";
     }
 }

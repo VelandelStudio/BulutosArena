@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
 
+// ATTENTION ANCIENNE VERSION ! N'EST PLUS UTILISEE EN MULTIJOUEUR//
+
     public float moveSpeed;
     public float jumpSpeed;
     private float initialSpeed;

@@ -10,19 +10,23 @@ public class PlayerBaseScript : NetworkBehaviour {
     [SerializeField] ToggleEvent onToggleShared;
     [SerializeField] ToggleEvent onToggleLocal;
     [SerializeField] ToggleEvent onToggleRemote;
+    [SerializeField] float respawnTime = 5f;
 
     private GameObject mainCamera;
 
     private void Start()
     {
         if (isLocalPlayer)
-            mainCamera = GetComponentInChildren<Camera>(true).gameObject;
+            mainCamera = Camera.main.gameObject;
 
         EnablePlayer();
     }
 
     private void DisablePlayer()
     {
+        if (isLocalPlayer)
+            mainCamera.SetActive(true);
+
         onToggleShared.Invoke(false);
 
         if (isLocalPlayer)
@@ -33,11 +37,32 @@ public class PlayerBaseScript : NetworkBehaviour {
 
     private void EnablePlayer()
     {
+        if (isLocalPlayer)
+            mainCamera.SetActive(false);
+
         onToggleShared.Invoke(true);
 
         if(isLocalPlayer)
             onToggleLocal.Invoke(true);
         else
             onToggleRemote.Invoke(true);
+    }
+
+    public void Die()
+    {
+        DisablePlayer();
+        Invoke("Respawn", respawnTime);
+    }
+
+    private void Respawn()
+    {
+        if (isLocalPlayer)
+        {
+            Transform spawn = NetworkManager.singleton.GetStartPosition();
+            transform.position = spawn.position;
+            transform.rotation = spawn.rotation;
+        }
+
+        EnablePlayer();
     }
 }

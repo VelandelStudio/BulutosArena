@@ -7,42 +7,51 @@ public class PlayerShooting : NetworkBehaviour {
     bool canShoot;
     float ellapsedTime;
 
-    Transform gunEnd;
-    [SerializeField]
-    int gunDamage;
-    [SerializeField]
-    float fireRate;
-    [SerializeField]
-    float weaponRange;
-    [SerializeField]
-    float hitForce;
+    private Transform gunEnd;
+    private int gunDamage;
+    private float fireRate;
+    private float weaponRange;
+    private float hitForce;
+    private string weaponName;
 
-    public virtual void Start()
+    private WeaponBase weapon;
+    private WeaponBase[] Allweapons;
+
+    private void Start()
     {
         if (isLocalPlayer)
         {
             canShoot = true;
-            Transform[] gunEnds = gameObject.GetComponentsInChildren<Transform>(true);
-            foreach (Transform gunEndElement in gunEnds)
-            {
-                if (gunEndElement.CompareTag("GunEnd")) {
-                    gunEnd = gunEndElement;
-                }
-            }
-        }
+            weapon = gameObject.GetComponentInChildren<WeaponBase>();
+            Allweapons = gameObject.GetComponentsInChildren<WeaponBase>(true);
+            getGunEnd();
+            UpdateWeapon();
+        } 
     }
 
-    public virtual void Update()
+    private void Update()
     {
         if (!canShoot)
             return;
 
         ellapsedTime += Time.deltaTime;
 
-        if(Input.GetButton("Fire1") && ellapsedTime > fireRate)
+        if(Input.GetButton("Fire1") && ellapsedTime > fireRate && gunEnd!= null)
         {
             ellapsedTime = 0f;
             CmdFireShot(gunEnd.position, gunEnd.forward);
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            CmdSwitchWeapon();
+        }
+
+            weapon = gameObject.GetComponentInChildren<WeaponBase>();
+        if (weapon != null && weaponName != weapon.weaponName)
+        {
+            getGunEnd();
+            UpdateWeapon();
         }
     }
 
@@ -58,12 +67,27 @@ public class PlayerShooting : NetworkBehaviour {
         {
             if (hit.collider.tag == "Player")
             {
-                //TakeDamageScripts;
+                PlayerHealth enemy = hit.transform.GetComponent<PlayerHealth>();
+                if (enemy != null)
+                    enemy.TakeDamage();
             }
 
         }
 
         RpcProcessShotEffects(playerImpact, hit.point);
+    }
+
+    [Command]
+    void CmdSwitchWeapon()
+    {
+        weapon.gameObject.SetActive(false);
+        foreach (WeaponBase newWeapon in Allweapons)
+        {
+            if (newWeapon.gameObject.name == "Mitraillette")
+                newWeapon.gameObject.SetActive(true);
+
+            Debug.Log(newWeapon.weaponName);
+        }
     }
 
     [ClientRpc]
@@ -75,5 +99,22 @@ public class PlayerShooting : NetworkBehaviour {
         {
             // play process impacts
         }
+    }
+
+    private void UpdateWeapon()
+    {
+        weaponName = weapon.weaponName;
+        gunDamage = weapon.gunDamage;
+        fireRate = weapon.fireRate;
+        weaponRange = weapon.weaponRange;
+        hitForce = weapon.hitForce;
+    }
+
+    private void getGunEnd()
+    {
+        Transform[] gunEnds = weapon.gameObject.GetComponentsInChildren<Transform>();
+        foreach (Transform gunEndElement in gunEnds)
+            if (gunEndElement.CompareTag("GunEnd"))
+                gunEnd = gunEndElement;
     }
 }
