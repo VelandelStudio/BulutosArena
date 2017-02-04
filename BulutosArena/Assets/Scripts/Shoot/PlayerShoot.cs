@@ -25,12 +25,12 @@ public class PlayerShoot: NetworkBehaviour {
     {
         if (Input.GetButtonDown ("Fire1"))
         {
-            Shoot();
+            CmdShoot();
         }
     }
 
-    [Client]
-    private void Shoot()
+    [Command]
+    private void CmdShoot()
     {
         RaycastHit hit;
         Debug.DrawRay(cameraPlayer.transform.position, cameraPlayer.transform.forward * weapon.range, Color.red);
@@ -38,13 +38,14 @@ public class PlayerShoot: NetworkBehaviour {
         {
             Debug.Log("Je tire sur : " + hit.collider.name);
             if (hit.collider.tag == PLAYER_TAG)
-                CmdPlayerShot(hit.collider.name);
+                CmdPlayerShot(hit.collider.name, weapon.damage);
         }
     }
 
     [Command]
-    private void CmdPlayerShot(string ID)
+    private void CmdPlayerShot(string playerID, int weaponDamage)
     {
-        Debug.Log(ID + " has been shot");
+        PlayerManager player = GameManager.GetPlayer(playerID);
+        player.RpcTakeDamage(weaponDamage);
     }
 }

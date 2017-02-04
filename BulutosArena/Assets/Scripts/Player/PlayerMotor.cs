@@ -10,6 +10,7 @@ public class PlayerMotor : MonoBehaviour {
     private Camera playerCamera;
 
     private Vector3 velocity = Vector3.zero;
+    private Vector3 velocityOnJumping = Vector3.zero;
     private Vector3 horizontalRotation = Vector3.zero;
     private Vector3 verticalRotation = Vector3.zero;
 
@@ -31,8 +32,13 @@ public class PlayerMotor : MonoBehaviour {
 
     private void PerformMovementOfPlayer()
     {
-        if (velocity != Vector3.zero)
-            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+        if (velocity != Vector3.zero) {
+            if (isGrounded())
+                rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+            else
+                rb.MovePosition(rb.position + velocityOnJumping * Time.fixedDeltaTime);
+        }
+                
     }
 
     private void PerformRotationOfPlayer()
@@ -65,7 +71,10 @@ public class PlayerMotor : MonoBehaviour {
     public void Jump(float jumpForce)
     {
         if (isGrounded())
+        {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            velocityOnJumping = velocity;
+        }
     }
 
     private bool isGrounded()
