@@ -21,9 +21,11 @@ public class TargetHUD : NetworkBehaviour {
 
     public void targetDetected(Collider target)
     {
+
         if (target != null) { 
             if (target.tag != PLAYER_TAG)
             {
+                Debug.Log(textTarget.text);
                 textTarget.enabled = true;
                 textTarget.color = Color.green;
                 textTarget.text = "Target : " + target.name +"\n";

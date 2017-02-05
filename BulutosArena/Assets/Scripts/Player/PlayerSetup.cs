@@ -12,8 +12,13 @@ public class PlayerSetup : NetworkBehaviour {
 
     [SerializeField]
     private string dontRenderOnCamLayer = "DontRenderOnCam";
+
     [SerializeField]
     private GameObject playerGraphics;
+
+    [SerializeField]
+    private GameObject playerUIPrefab;
+    private GameObject playerUIInstance;
 
     private Camera sceneCamera;
 
@@ -28,6 +33,9 @@ public class PlayerSetup : NetworkBehaviour {
         {
             DisableSceneCamera();
             SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontRenderOnCamLayer));
+
+            playerUIInstance = Instantiate(playerUIPrefab);
+            playerUIInstance.name = playerUIPrefab.name;
         }
 
         GetComponent<PlayerManager>().Setup();
@@ -39,6 +47,11 @@ public class PlayerSetup : NetworkBehaviour {
         string netID = GetComponent<NetworkIdentity>().netId.ToString();
         PlayerManager player = GetComponent<PlayerManager>();
         GameManager.RegisterPlayer(netID, player);
+    }
+
+    public GameObject GetHUDInstance()
+    {
+        return playerUIInstance;
     }
 
     private void SetLayerRecursively(GameObject graphics, int newLayer)
@@ -70,6 +83,8 @@ public class PlayerSetup : NetworkBehaviour {
 
     private void OnDisable()
     {
+        Destroy(playerUIInstance);
+
         if(sceneCamera != null)
             sceneCamera.gameObject.SetActive(true);
 
