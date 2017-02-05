@@ -29,7 +29,7 @@ public class PlayerShoot: NetworkBehaviour {
         }
     }
 
-    [Command]
+    [Client]
     private void CmdShoot()
     {
         RaycastHit hit;

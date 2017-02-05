@@ -88,4 +88,8 @@ public class PlayerManager : NetworkBehaviour {
         Debug.Log(transform.name + " respawned !");
     }
 
+    public int getHealth()
+    {
+        return currentHealth;
+    }
 }

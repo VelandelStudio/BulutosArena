@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
 [RequireComponent(typeof(PlayerMotor))]
+[RequireComponent(typeof(Animator))]
+
 public class PlayerController : MonoBehaviour {
 
     [Header("Movement Options")]
@@ -13,9 +15,11 @@ public class PlayerController : MonoBehaviour {
     private float jumpForce = 25f;
 
     private PlayerMotor playerMotor;
+    private Animator animator;
 
     void Start () {
         playerMotor = GetComponent<PlayerMotor>();
+        animator = GetComponent<Animator>();
     }
 
     void Update () {
@@ -31,10 +35,11 @@ public class PlayerController : MonoBehaviour {
 
     private void CalculateMovement()
     {
-        Vector3 horizontalMovement = Input.GetAxisRaw("Horizontal") * transform.right;
-        Vector3 verticalMovement = Input.GetAxisRaw("Vertical") * transform.forward;
+        Vector3 horizontalMovement = Input.GetAxis("Horizontal") * transform.right;
+        Vector3 verticalMovement = Input.GetAxis("Vertical") * transform.forward;
         Vector3 velocity = (horizontalMovement + verticalMovement).normalized * moveSpeed;
 
+        animator.SetFloat("Movement", Input.GetAxis("Vertical"));
         playerMotor.MovePlayer(velocity);
     }
 

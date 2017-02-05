@@ -10,6 +10,11 @@ public class PlayerSetup : NetworkBehaviour {
     [SerializeField]
     private string remoteLayerName = "RemotePlayerLayer";
 
+    [SerializeField]
+    private string dontRenderOnCamLayer = "DontRenderOnCam";
+    [SerializeField]
+    private GameObject playerGraphics;
+
     private Camera sceneCamera;
 
     private void Start()
@@ -22,6 +27,7 @@ public class PlayerSetup : NetworkBehaviour {
         else
         {
             DisableSceneCamera();
+            SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontRenderOnCamLayer));
         }
 
         GetComponent<PlayerManager>().Setup();
@@ -33,6 +39,15 @@ public class PlayerSetup : NetworkBehaviour {
         string netID = GetComponent<NetworkIdentity>().netId.ToString();
         PlayerManager player = GetComponent<PlayerManager>();
         GameManager.RegisterPlayer(netID, player);
+    }
+
+    private void SetLayerRecursively(GameObject graphics, int newLayer)
+    {
+        graphics.layer = newLayer;
+        foreach (Transform child in graphics.transform)
+        {
+            SetLayerRecursively(child.gameObject, newLayer);
+        }
     }
 
     private void AssignRemoteLayer()
