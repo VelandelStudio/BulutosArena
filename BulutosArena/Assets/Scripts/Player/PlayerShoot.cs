@@ -7,13 +7,17 @@ public class PlayerShoot: NetworkBehaviour {
 
     [SerializeField]
     private Camera cameraPlayer;
-
     [SerializeField]
     private LayerMask layerMask;
+    [SerializeField]
+    private PlayerSetup playerSetup;
 
     private const string PLAYER_TAG = "Player";
+    private TargetHUD targetHUD;
+
     private void Start()
     {
+        targetHUD = playerSetup.GetHUDInstance().GetComponent<TargetHUD>();
         if (cameraPlayer == null)
         {
             Debug.LogError("PlayerShoot : Camera absente !");
@@ -23,17 +27,32 @@ public class PlayerShoot: NetworkBehaviour {
 
     private void Update()
     {
+        Targetting();
+
         if (Input.GetButtonDown ("Fire1"))
         {
-            CmdShoot();
+            Shoot();
         }
     }
 
     [Client]
-    private void CmdShoot()
+    private void Targetting()
+    {
+        if (targetHUD != null)
+        {
+            RaycastHit hit;
+            if (Physics.Raycast(cameraPlayer.transform.position, cameraPlayer.transform.forward, out hit, weapon.range, layerMask))
+                targetHUD.targetDetected(hit.collider);
+            else
+                targetHUD.noTargetDetected();
+        }
+    }
+
+
+    [Client]
+    private void Shoot()
     {
         RaycastHit hit;
-        Debug.DrawRay(cameraPlayer.transform.position, cameraPlayer.transform.forward * weapon.range, Color.red);
         if(Physics.Raycast(cameraPlayer.transform.position, cameraPlayer.transform.forward, out hit, weapon.range, layerMask))
         {
             Debug.Log("Je tire sur : " + hit.collider.name);
