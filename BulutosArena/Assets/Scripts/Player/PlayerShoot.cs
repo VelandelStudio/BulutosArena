@@ -3,14 +3,18 @@ using UnityEngine.Networking;
 
 public class PlayerShoot: NetworkBehaviour {
 
-    public PlayerWeapon weapon;
-
+    [SerializeField]
+    private PlayerWeapon weapon;
     [SerializeField]
     private Camera cameraPlayer;
     [SerializeField]
     private LayerMask layerMask;
     [SerializeField]
     private PlayerSetup playerSetup;
+    [SerializeField]
+    private GameObject weaponGFX;
+    [SerializeField]
+    private string weaponLayerName = "WeaponLayer";
 
     private const string PLAYER_TAG = "Player";
     private TargetHUD targetHUD;
@@ -23,6 +27,8 @@ public class PlayerShoot: NetworkBehaviour {
             Debug.LogError("PlayerShoot : Camera absente !");
             this.enabled = false;
         }
+
+        weaponGFX.layer = LayerMask.NameToLayer(weaponLayerName);
     }
 
     private void Update()
