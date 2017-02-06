@@ -2,7 +2,7 @@
 using System.Collections;
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(CapsuleCollider))]
+[RequireComponent(typeof(SphereCollider))]
 
 public class PlayerMotor : MonoBehaviour {
 
@@ -15,12 +15,12 @@ public class PlayerMotor : MonoBehaviour {
     private Vector3 verticalRotation = Vector3.zero;
 
     private Rigidbody rb;
-    private CapsuleCollider capsuleCollider;
+    private SphereCollider sphereCollider;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
+        sphereCollider = GetComponent<SphereCollider>();
     }
 
     private void FixedUpdate()
@@ -80,7 +80,7 @@ public class PlayerMotor : MonoBehaviour {
     private bool isGrounded()
     {
         RaycastHit hitInfo;
-        return (Physics.SphereCast(transform.position, capsuleCollider.radius * 0.99f, Vector3.down, out hitInfo,
-            ((capsuleCollider.height / 2f) - capsuleCollider.radius) + 0.5f, Physics.AllLayers, QueryTriggerInteraction.Ignore));
+        return (Physics.SphereCast(transform.position, sphereCollider.radius * 0.99f, Vector3.down, out hitInfo,
+             0.5f, Physics.AllLayers, QueryTriggerInteraction.Ignore));
     }
 }
