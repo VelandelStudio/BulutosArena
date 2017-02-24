@@ -2,7 +2,13 @@
 using UnityEngine.Networking;
 using System.Collections;
 
+[RequireComponent(typeof(PlayerSetup))]
 public class PlayerManager : NetworkBehaviour {
+
+    [SerializeField]
+    private GameObject deathEffects;
+    [SerializeField]
+    private GameObject spawnEffects;
 
     [SerializeField]
     private int maxHealth = 100;
@@ -20,6 +26,11 @@ public class PlayerManager : NetworkBehaviour {
 
     [SerializeField]
     private Behaviour[] disableOnDeath;
+    [SerializeField]
+    private GameObject[] disableGameObjectsOnDeath;
+
+    [SerializeField]
+    private PlayerSetup player;
 
     private bool[] wasEnabled;
 
@@ -54,11 +65,22 @@ public class PlayerManager : NetworkBehaviour {
         for (int i = 0; i < disableOnDeath.Length; i++)
             disableOnDeath[i].enabled = false;
 
+        for (int i = 0; i < disableGameObjectsOnDeath.Length; i++)
+            disableGameObjectsOnDeath[i].SetActive(false);
+
         Collider col = GetComponent<Collider>();
         if (col != null)
             col.enabled = false;
 
-        Debug.Log(transform.name + " is isDead !");
+        if (isLocalPlayer)
+        {
+            player.GetHUDInstance().GetComponent<TargetHUD>().ManageUIOnDeath(isDead);
+            GameManager.gameManagerInstance.SetSceneCameraActive(true);
+        }
+
+        GameObject explosionInstance = Instantiate(deathEffects, transform.position, Quaternion.identity);
+        Destroy(explosionInstance, 5f);
+
         StartCoroutine(Respawn());
         
     }
@@ -71,25 +93,41 @@ public class PlayerManager : NetworkBehaviour {
         for (int i = 0; i < disableOnDeath.Length; i++)
             disableOnDeath[i].enabled = wasEnabled[i];
 
+        for (int i = 0; i < disableGameObjectsOnDeath.Length; i++)
+            disableGameObjectsOnDeath[i].SetActive(true);
+
         Collider col = GetComponent<Collider>();
         if (col != null)
             col.enabled = true;
+
+        if (isLocalPlayer)
+        {
+            player.GetHUDInstance().GetComponent<TargetHUD>().ManageUIOnDeath(isDead);
+            GameManager.gameManagerInstance.SetSceneCameraActive(false);
+        }
+
+        GameObject spawnInstance = Instantiate(spawnEffects, transform.position, Quaternion.identity);
+        Destroy(spawnInstance, 3f);
     }   
 
     private IEnumerator Respawn()
     {
         yield return new WaitForSeconds(GameManager.gameManagerInstance.matchSettings.RespawnTime);
 
-        setDefaults();
         Transform spawnPoint = NetworkManager.singleton.GetStartPosition();
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
-
-        Debug.Log(transform.name + " respawned !");
+        setDefaults();
     }
 
     public int getHealth()
     {
         return currentHealth;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKey(KeyCode.K))
+            RpcTakeDamage(99999);
     }
 }
