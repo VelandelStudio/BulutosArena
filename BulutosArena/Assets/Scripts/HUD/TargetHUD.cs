@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Networking;
 
-public class TargetHUD : NetworkBehaviour {
+public class TargetHUD : NetworkBehaviour
+{
 
     [SerializeField]
     private Image reticule;
@@ -11,24 +13,26 @@ public class TargetHUD : NetworkBehaviour {
     [SerializeField]
     private Image lineTarget;
     [SerializeField]
+    private Image mort;
+    [SerializeField]
     private Text textTarget;
 
     private const string PLAYER_TAG = "Player";
-
-    void Start () {
+    void Start()
+    {
         SetDefaultValues();
     }
 
-    public void targetDetected(Collider target)
+    public void DisplayTargetInfo(Collider target)
     {
 
-        if (target != null) { 
+        if (target != null)
+        {
             if (target.tag != PLAYER_TAG)
             {
-                Debug.Log(textTarget.text);
                 textTarget.enabled = true;
                 textTarget.color = Color.green;
-                textTarget.text = "Target : " + target.name +"\n";
+                textTarget.text = "Target : " + target.name + "\n";
 
                 lineTarget.enabled = true;
                 lineTarget.color = Color.green;
@@ -52,11 +56,22 @@ public class TargetHUD : NetworkBehaviour {
                 viseur.color = Color.red;
             }
         }
+        else
+            SetDefaultValues();
     }
 
-    public void noTargetDetected()
+    public void ManageUIOnDeath(bool isDead)
     {
-        SetDefaultValues();
+        if (isDead)
+        {
+            reticule.enabled = false;
+            viseur.enabled = false;
+            lineTarget.enabled = false;
+            textTarget.enabled = false;
+            mort.enabled = true;
+        }
+        else
+            SetDefaultValues();
     }
 
     private void SetDefaultValues()
@@ -65,6 +80,7 @@ public class TargetHUD : NetworkBehaviour {
         viseur.enabled = true;
         lineTarget.enabled = false;
         textTarget.enabled = false;
+        mort.enabled = false;
 
         textTarget.text = "";
         reticule.color = Color.blue;

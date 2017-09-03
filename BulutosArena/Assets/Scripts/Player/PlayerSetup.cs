@@ -20,8 +20,6 @@ public class PlayerSetup : NetworkBehaviour {
     private GameObject playerUIPrefab;
     private GameObject playerUIInstance;
 
-    private Camera sceneCamera;
-
     private void Start()
     {
         if (!isLocalPlayer)
@@ -31,7 +29,6 @@ public class PlayerSetup : NetworkBehaviour {
         }
         else
         {
-            DisableSceneCamera();
             SetLayerRecursively(playerGraphics, LayerMask.NameToLayer(dontRenderOnCamLayer));
 
             playerUIInstance = Instantiate(playerUIPrefab);
@@ -74,20 +71,11 @@ public class PlayerSetup : NetworkBehaviour {
             component.enabled = false;
     }
 
-    private void DisableSceneCamera()
-    {
-        sceneCamera = Camera.main;
-        if (sceneCamera != null)
-            sceneCamera.gameObject.SetActive(false);
-    }
-
     private void OnDisable()
     {
         Destroy(playerUIInstance);
 
-        if(sceneCamera != null)
-            sceneCamera.gameObject.SetActive(true);
-
+        GameManager.gameManagerInstance.SetSceneCameraActive(true);
         GameManager.UnregisterPlayer(transform.name);
     }
 }
